@@ -302,3 +302,311 @@ Confirmação de que o dataset está pronto para modelagem
 
 🚀 Conclusão
 A Etapa 2 garante que os dados estejam consistentes, completos e padronizados — prontos para avançarmos para a etapa de modelagem na fase 3!
+
+
+# 📊 Etapa 3 — Modelo Baseline (Regressão Linear)
+Projeto de Machine Learning – Construção do Primeiro Modelo
+
+## 🎯 Visão Geral
+
+Na Etapa 3, construímos nosso **primeiro modelo de Machine Learning** — um baseline usando **Regressão Linear**. 
+Este modelo servirá como referência para comparar com modelos mais complexos no futuro.
+
+O objetivo é:
+- ✔️ Treinar um modelo simples e interpretável
+- ✔️ Avaliar desempenho com métricas padrão
+- ✔️ Detectar problemas como overfitting
+- ✔️ Compreender quais variáveis mais impactam a previsão
+
+Todo o trabalho desta etapa está documentado no notebook:
+📁 **notebooks/03_Modelo_Baseline.ipynb**
+
+---
+
+## 📝 Tarefas Realizadas
+
+### 1️⃣ Carregamento dos Dados Limpos
+
+**Por que fazer isso?**
+➡️ Usamos os dados já processados da Etapa 2, garantindo qualidade e consistência.
+
+**✔️ O que foi feito:**
+
+- Carregamento do arquivo `delivery_clean.csv` gerado na Etapa 2
+- Verificação de integridade (formas, tipos de dados)
+- Confirmação de que não há valores faltantes
+
+---
+
+### 2️⃣ Preparação das Features (X) e Target (y)
+
+**Por que fazer isso?**
+➡️ Precisamos separar variáveis de entrada (features) da variável que queremos prever (target).
+
+**✔️ O que foi feito:**
+
+- **Target (y):** `delivery_time_hours` — o que o modelo vai prever
+- **Features (X):** todas as outras colunas relevantes
+- Remoção de IDs e colunas não úteis (`delivery_id`)
+- Sincronização entre X e y para garantir consistência
+
+---
+
+### 3️⃣ Codificação de Variáveis Categóricas
+
+**Por que fazer isso?**
+➡️ A Regressão Linear só funciona com números. Variáveis texto precisam ser convertidas.
+
+**✔️ O que foi feito:**
+
+- Identificação de colunas categóricas (texto)
+- Aplicação de **One-Hot Encoding** com `pd.get_dummies()`
+- Uso de `drop_first=True` para evitar multicolinearidade (armadilha de dummy)
+- Resultado: features aumentaram de X colunas para Y colunas (mais features binárias)
+
+---
+
+### 4️⃣ Tratamento de Valores Faltantes (NaN)
+
+**Por que fazer isso?**
+➡️ Regressão Linear não aceita NaN nativamente e gera erros.
+
+**✔️ O que foi feito:**
+
+- Verificação de NaN por coluna após codificação
+- **Remoção de linhas com valores faltantes** (mantém consistência)
+- Sincronização: quando removemos linhas de X, removemos as mesmas de y
+- Resultado: dataset limpo e pronto para treinamento
+
+---
+
+### 5️⃣ Divisão dos Dados (Train / Validation / Test)
+
+**Por que fazer isso?**
+➡️ Precisamos de dados separados para:
+- **Treinar** o modelo
+- **Validar** durante desenvolvimento
+- **Testar** de forma imparcial no final
+
+**✔️ O que foi feito:**
+
+- **60% Treino** (X_train, y_train) — dados para ajustar os pesos do modelo
+- **20% Validação** (X_val, y_val) — dados para avaliar e ajustar hiperparâmetros
+- **20% Teste** (X_test, y_test) — dados **guardados** para avaliação final (NÃO USAR AGORA)
+
+**Método:** 
+1. Separar 20% para teste
+2. Do restante, separar 25% para validação (25% de 80% = 20% do total)
+
+---
+
+### 6️⃣ Treinamento do Modelo Baseline
+
+**Por que Regressão Linear?**
+➡️ É simples, rápido, interpretável e fornece uma boa linha de base para comparação.
+
+**✔️ O que foi feito:**
+
+```python
+from sklearn.linear_model import LinearRegression
+
+modelo = LinearRegression()
+modelo.fit(X_train, y_train)
+```
+
+- Ajuste dos coeficientes β para minimizar o erro quadrático
+- O modelo aprendeu a relação linear entre features e target
+- **Resultado:** Modelo treinado pronto para fazer previsões
+
+---
+
+### 7️⃣ Análise dos Coeficientes (Feature Importance)
+
+**Por que fazer isso?**
+➡️ Entender quais variáveis mais impactam a previsão de tempo de entrega.
+
+**✔️ O que foi feito:**
+
+- Extração dos coeficientes do modelo
+- Ranking das features por impacto (valor absoluto)
+- **Top 5 Variáveis Mais Impactantes** identificadas
+- Interpretação: coeficientes positivos aumentam o tempo, negativos diminuem
+
+**Exemplo de saída:**
+```
+Feature                  Coeficiente
+distance_km              3.45
+package_weight_kg        0.82
+shipping_class_Standard -0.50
+...
+```
+
+---
+
+### 8️⃣ Avaliação e Métricas
+
+**Por que fazer isso?**
+➡️ Quantificar o desempenho do modelo com métricas padrão e detectar problemas.
+
+**✔️ Métricas Calculadas:**
+
+| Métrica | O que significa | Fórmula | Melhor valor |
+|---------|-----------------|---------|--------------|
+| **MSE** | Erro Quadrático Médio | Média de (y - ŷ)² | Próximo de 0 |
+| **RMSE** | Raiz do MSE | √MSE | Próximo de 0 |
+| **MAE** | Erro Absoluto Médio | Média de \|y - ŷ\| | Próximo de 0 |
+| **R²** | Coeficiente de Determinação | 1 - (SS_res / SS_tot) | Próximo de 1 |
+
+**✔️ O que foi feito:**
+
+- Previsões em Treino: `y_train_pred = modelo.predict(X_train)`
+- Previsões em Validação: `y_val_pred = modelo.predict(X_val)`
+- Cálculo de MSE, RMSE, MAE e R² para ambos os conjuntos
+- **Comparação Treino vs Validação** em tabela clara
+
+**Exemplo de saída:**
+```
+          MSE      RMSE     MAE      R²
+Treino    2.34     1.53    0.98    0.87
+Validação 2.67     1.63    1.05    0.84
+```
+
+---
+
+### 9️⃣ Detecção de Overfitting
+
+**Por que fazer isso?**
+➡️ Overfitting ocorre quando o modelo memoriza treino mas falha em dados novos.
+
+**✔️ O que foi feito:**
+
+- Cálculo da diferença de R² entre Treino e Validação
+- **Análise:** 
+  - Diferença < 0.10 → ✅ Modelo generaliza bem
+  - Diferença > 0.10 → ⚠️ Possível overfitting
+
+**Exemplo:**
+```
+Diferença R²: 0.03 → ✅ SUCESSO: Modelo generaliza bem (sem overfitting grave)
+```
+
+---
+
+### 🔟 Visualizações
+
+**Por que fazer isso?**
+➡️ Gráficos facilitam entendimento visual do desempenho.
+
+**✔️ O que foi feito:**
+
+#### **Gráfico 1: Predito vs Real (Scatter Plot)**
+- Eixo X: Valores reais de tempo de entrega
+- Eixo Y: Previsões do modelo
+- Linha vermelha: previsão perfeita (y = x)
+- Interpretação: quanto mais próximo da linha, melhor o modelo
+- Salvo em: `models/predicoes_vs_real.png`
+
+#### **Gráfico 2: Distribuição de Resíduos (Histogram)**
+- Resíduos = Erro (Real - Previsto)
+- Distribuição ideal: simétrica e centrada em zero
+- Presença de cauda pesada pode indicar outliers
+- Salvo em: `models/residuos.png`
+
+---
+
+### 1️⃣1️⃣ Salvamento do Modelo
+
+**Por que fazer isso?**
+➡️ Reutilizar o modelo em produção sem treinar novamente.
+
+**✔️ O que foi feito:**
+
+```python
+import joblib
+
+joblib.dump(modelo, 'models/baseline_model.pkl')
+```
+
+- Modelo serializado e salvo
+- Pode ser carregado depois com: `joblib.load('models/baseline_model.pkl')`
+- Localização: `📁 models/baseline_model.pkl`
+
+---
+
+## 📊 Entregáveis Principais
+
+| Arquivo | Descrição |
+|---------|-----------|
+| 📓 `notebooks/03_Modelo_Baseline.ipynb` | Código + explicações do treinamento |
+| 📁 `models/baseline_model.pkl` | Modelo treinado salvo |
+| 📈 `models/predicoes_vs_real.png` | Gráfico Predito vs Real |
+| 📉 `models/residuos.png` | Distribuição de resíduos |
+
+---
+
+## 🎤 Apresentação (4–5 Minutos)
+
+### 🖼️ Slide 1 — Visão Geral do Modelo
+
+- Tipo: Regressão Linear (Baseline)
+- Dados: 2510 amostras, X features após encoding
+- Divisão: 60% treino, 20% validação, 20% teste
+
+### 🧩 Slide 2 — Processo de Preparação
+
+- Codificação de categorias (One-Hot Encoding)
+- Tratamento de NaN
+- Divisão estratégica dos dados
+
+### 📊 Slide 3 — Métricas e Desempenho
+
+- Tabela comparativa Treino vs Validação
+- R² do modelo
+- Diferença de R² (análise de overfitting)
+- **Conclusão:** Modelo generaliza bem? Há overfitting?
+
+### 🔍 Slide 4 — Top Features e Interpretação
+
+- 5 variáveis mais impactantes
+- Qual aumenta/diminui tempo de entrega?
+- Faz sentido com o negócio?
+
+### 📈 Slide 5 — Gráficos Principais
+
+- Predito vs Real (scatter plot)
+- Distribuição de resíduos
+
+---
+
+## ✅ Checklist de Sucesso
+
+- ✔️ Dados carregados e preparados sem erros
+- ✔️ Features codificadas (One-Hot Encoding aplicado)
+- ✔️ NaN tratados apropriadamente
+- ✔️ Dados divididos em treino/validação/teste
+- ✔️ Modelo treinado com sucesso
+- ✔️ Métricas calculadas (MSE, RMSE, MAE, R²)
+- ✔️ Overfitting analisado
+- ✔️ Gráficos gerados e salvos
+- ✔️ Modelo salvo em `.pkl`
+- ✔️ Notebook executa do início ao fim sem erros
+
+---
+
+## 🚀 Próximos Passos
+
+Agora que temos um modelo baseline:
+
+1. **Etapa 4 (Modelos Avançados):** Testar Random Forest, XGBoost, etc.
+2. **Ajustes:** Tuning de hiperparâmetros
+3. **Validação Final:** Avaliar no conjunto de teste
+4. **Deploy:** Colocar o melhor modelo em produção
+
+---
+
+## 🎓 Conclusão
+
+A Etapa 3 estabeleceu uma **linha de base sólida** com Regressão Linear. 
+Este modelo simples e interpretável serve como referência para futuras melhorias e fornece insights sobre quais features impactam mais o tempo de entrega.
+
+**Com essa estrutura, estamos prontos para avançar para modelagem mais sofisticada!** 🚀
