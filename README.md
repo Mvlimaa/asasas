@@ -10,7 +10,7 @@ Fernando Antônio da Silva Neto - 01703313
 
 📂 Dataset Utilizado
 
-Nome do Dataset: (coloque aqui)
+Nome do Dataset: (delivery_time.csv)
 Descrição rápida: Dataset contendo informações de entregas (distâncias, clima, peso, categoria, etc.) para prever o tempo total de entrega.
 
 📊 Etapa 1 — Análise Exploratória (EDA)
