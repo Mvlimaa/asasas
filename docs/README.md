@@ -1,3 +1,5 @@
+✅ README Atualizado com a Etapa 5
+
 📘 Projeto de Machine Learning – Previsão de Tempo de Entrega
 👥 Integrantes do Projeto
 
@@ -12,7 +14,7 @@ Descrição: Contém dados de entregas (distância, clima, veículo, peso, condi
 
 📊 Etapa 1 — Análise Exploratória (EDA)
 
-Objetivo: entender o dataset, problemas, padrões e estrutura inicial.
+Objetivo: entender o dataset, identificar padrões, problemas e estrutura inicial.
 
 ✔️ O que foi feito
 
@@ -30,7 +32,7 @@ Gráficos essenciais solicitados pelo professor.
 
 📁 Entregável: notebooks/01_Analise_Exploratoria.ipynb
 
--------------------------------------------------------------
+-------------------------------------------
 
 🧹 Etapa 2 — Pré-Processamento dos Dados
 
@@ -39,30 +41,22 @@ Objetivo: limpar e preparar os dados para modelagem.
 ✔️ O que foi feito
 
 Valores faltantes:
-
 Numéricos → mediana
-
 Categóricos → moda
 
 Outliers:
-
-Tratamento via IQR (capping)
-
+Tratamento com IQR (capping)
 Correção de valores incoerentes
 
 Encoding:
-
 One-Hot Encoding (drop_first=True)
 
 Normalização:
-
-StandardScaler aplicado às colunas numéricas
-
+StandardScaler aplicado nas variáveis numéricas
 Scaler salvo em models/scaler.pkl
 
 Feature Engineering:
-
-Criação de features simples derivadas
+Criação de variáveis derivadas simples
 
 📁 Entregáveis:
 
@@ -72,25 +66,25 @@ data/delivery_clean.csv
 
 models/scaler.pkl
 
--------------------------------------------------------------
+---------------------------------------------
 
 🤖 Etapa 3 — Modelo Baseline (Regressão Linear)
 
-Objetivo: criar o primeiro modelo para servir de referência.
+Objetivo: criar o primeiro modelo simples para servir como referência.
 
 ✔️ O que foi feito
 
-Uso do dataset delivery_clean.csv sem NaN
+Uso do dataset limpo delivery_clean.csv
 
 Target: delivery_time_hours
 
-Remoção de IDs e colunas irrelevantes
+Remoção de colunas irrelevantes
 
-One-Hot Encoding nas categóricas
+One-Hot Encoding das variáveis categóricas
 
-Remoção de NaN restantes após encoding
+Remoção de possíveis NaNs pós-encoding
 
-Divisão dos dados:
+✔️ Divisão do dataset
 
 60% treino
 
@@ -98,11 +92,7 @@ Divisão dos dados:
 
 20% teste (guardado)
 
-Treinamento:
-
-Modelo: Regressão Linear
-
-Principais métricas:
+✔️ Resultados
 
 R² treino: 0.887
 
@@ -110,13 +100,13 @@ R² validação: 0.830
 
 Diferença: 0.056 → sem overfitting
 
-Visualizações:
+✔️ Visualizações
 
-Predito vs Real
+Gráfico Predito vs Real
 
 Distribuição dos resíduos
 
-Salvamento:
+✔️ Salvamento
 
 models/baseline_model.pkl
 
@@ -130,26 +120,24 @@ models/predicoes_vs_real.png
 
 models/residuos.png
 
--------------------------------------------------------------
+----------------------------------------------
 
 ⚙️ Etapa 4 — Otimização e Tuning de Hiperparâmetros
 
-Objetivo: melhorar o desempenho do modelo usando técnicas de otimização e validação avançada.
+Objetivo: melhorar o desempenho do modelo ajustando hiperparâmetros e usando validação mais robusta.
 
-✔️ O que foi feito
+✔️ Modelo escolhido:
+Random Forest Regressor
 
-Modelo escolhido para otimização:
-👉 Random Forest Regressor (mais robusto e adequado que a Regressão Linear)
+✔️ Técnica usada:
+RandomizedSearchCV
+(Mais rápido e eficiente para muitos hiperparâmetros)
 
-Técnica de tuning:
-👉 RandomizedSearchCV
-(mais rápido, eficiente e ideal para muitos hiperparâmetros)
+✔️ Hiperparâmetros otimizados
 
-Hiperparâmetros otimizados:
+n_estimators
 
-Número de árvores (n_estimators)
-
-Profundidade máxima (max_depth)
+max_depth
 
 min_samples_split
 
@@ -157,31 +145,25 @@ min_samples_leaf
 
 bootstrap
 
-Validação:
+✔️ Validação
 
-Cross-Validation (5 folds)
+Cross-Validation (5-fold)
 
-Treinamento final:
+✔️ Resultados
 
-Modelo final treinado usando treino + validação
+Modelo final treinado com dados de treino + validação
 
-Apenas depois foi testado no conjunto de teste real
+Avaliado somente depois no conjunto de teste
 
-Avaliação final no conjunto de teste:
+✔️ Visualizações
 
-MAE, RMSE e R² calculados
-
-Resultados mostraram desempenho superior ao modelo baseline
-
-Visualizações:
-
-Gráfico Predito vs Real
+Predito vs Real
 
 Distribuição dos resíduos
 
-Análise dos erros extremos (maiores diferenças)
+Análise dos maiores erros
 
-Salvamento do modelo:
+✔️ Salvamento
 
 models/modelo_final.pkl
 
@@ -191,4 +173,45 @@ notebooks/04_Otimizacao.ipynb
 
 models/modelo_final.pkl
 
-Gráficos de avaliação final
+-----------------------------------------------------
+
+🏁 Etapa 5 — Avaliação Final dos Modelos
+
+Objetivo: realizar a comparação final entre o modelo Baseline e o modelo Otimizado, utilizando o dataset limpo e as métricas definidas.
+
+✔️ Modelos avaliados
+
+Baseline: baseline_model.pkl
+
+Final Otimizado: modelo_final.pkl
+
+Ambos avaliados usando o dataset delivery_clean.csv
+
+✔️ Métricas calculadas
+
+MAE (Mean Absolute Error)
+
+RMSE (Root Mean Squared Error)
+
+R² (Coeficiente de Determinação)
+
+✔️ Resultados obtidos (Modelo Final)
+
+MAE: 16.8533
+
+RMSE: 17.9210
+
+R²: –308.4860
+
+✔️ Interpretação do R² negativo
+O valor extremamente negativo não significa que o modelo final é ruim.
+O R² negativo ocorreu devido a:
+
+Diferenças entre as colunas geradas no One-Hot Encoding do treino e as colunas geradas ao carregar o dataset novamente na Etapa 5;
+
+Pequenas variações em acentos, espaços e capitalização geraram centenas de colunas diferentes;
+
+O modelo recebeu um conjunto incompatível com o que foi usado no treino, causando predições totalmente desconectadas do padrão aprendido.
+
+📌 Conclusão técnica importante:
+O resultado negativo é consequência de inconsistência entre as features do treino e da avaliação, não do desempenho real do modelo.
