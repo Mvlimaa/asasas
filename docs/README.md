@@ -1,5 +1,3 @@
-✅ README Atualizado com a Etapa 5
-
 📘 Projeto de Machine Learning – Previsão de Tempo de Entrega
 👥 Integrantes do Projeto
 
